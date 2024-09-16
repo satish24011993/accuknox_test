@@ -58,7 +58,7 @@ from django.contrib.auth.models import AbstractBaseUser,AbstractUser,AbstractBas
 
 
 class CustomUser(AbstractUser):
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, db_index=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']

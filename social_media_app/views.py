@@ -11,6 +11,9 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.throttling import UserRateThrottle
 from django.utils import timezone
 from datetime import timedelta
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
+from django.utils.decorators import method_decorator
 
 from django.contrib.auth import authenticate
 
@@ -50,6 +53,7 @@ class UserSearchView(generics.ListAPIView):
     pagination_class = PageNumberPagination
     pagination_class.page_size = 10
 
+    @method_decorator(cache_page(60*5))
     def get_queryset(self):
         keyword = self.request.query_params.get('q','')
         if '@' in keyword: # Exact email match
@@ -123,15 +127,18 @@ class FriendsListView(generics.ListAPIView):
     #     return Friend.objects.filter(user=self.request.user)
     def get_queryset(self):
         user = self.request.user
-        accepted_requests = FriendRequest.objects.filter(
-            (Q(from_user=user)|Q(to_user=user)),
-            status='accepted'
-        )
-        friends = set()
-        for req in accepted_requests:
-            friends.add(req.from_user)
-            friends.add(req.to_user)
-        friends.discard(user)
+        cache_key = f'friends_list_{user.id}'
+        friends = cache.get(cache_key)
+        if not friends:
+            accepted_requests = FriendRequest.objects.filter(
+                (Q(from_user=user)|Q(to_user=user)),
+                status='accepted'
+            ).select_related('from_user','to_user')
+            friends = set()
+            for req in accepted_requests:
+                friends.add(req.from_user)
+                friends.add(req.to_user)
+            friends.discard(user)
         return list(friends)
     
 
@@ -141,7 +148,9 @@ class PendingFriendRequestsView(generics.ListAPIView):
     serializer_class = FriendRequestSerializer
 
     def get_queryset(self):
-        return FriendRequest.objects.filter(to_user=self.request.user, status='pending')
+        return FriendRequest.objects.filter(to_user=self.request.user, 
+                                            status='pending'
+                                            ).select_related('from_user','to_user')
     
 
 class RespondFriendRequestView(APIView):
