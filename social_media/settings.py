@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-2mic%2lqns7vkgzfn(sk^gx7k)^q+^)$dc@1ys_u5%b$e^@lub
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 
 # Application definition
@@ -81,14 +81,21 @@ WSGI_APPLICATION = 'social_media.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+    # 'default': dj_database_url.config(
+    #     default=os.environ.get('DATABASE_URL')
+    # )
 }
+
+# # If using SQLite, ensure the NAME (database path) is absolute
+# if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+#     db_path = DATABASES['default']['NAME']
+#     if not os.path.isabs(db_path):
+#         # Make the path absolute by joining it with BASE_DIR
+#         DATABASES['default']['NAME'] = str(BASE_DIR / db_path)
 
 
 # Password validation
@@ -179,8 +186,8 @@ LOGGING = {
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        # 'LOCATION': 'redis://redis:6379/1',  # We'll use 'redis' as hostname for Docker
-        'LOCATION': os.environ.get('REDIS_URL'),
+        'LOCATION': 'redis://redis:6379/1',  # We'll use 'redis' as hostname for Docker
+        # 'LOCATION': os.environ.get('REDIS_URL'),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
