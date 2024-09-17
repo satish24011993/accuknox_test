@@ -16,19 +16,32 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements.txt
-COPY requirements.txt /app/
+COPY requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
 
 # Expose the port
 EXPOSE 8000
 
 # Run the application
 CMD ['python', 'manage.py', 'runserver', '0.0.0.0:8000']
+# CMD ["gunicorn", "--bind", "0.0.0.0:8000", "social_media.wsgi:application"]
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
+# # Copy the project files
+# COPY . /app/
+
+# # List files in /app for debugging
+# RUN ls -la /app/
+
+# # Collect static files
+# RUN python manage.py collectstatic --noinput
 
 COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Set the entrypoint
 ENTRYPOINT ['/entrypoint.sh']
+
