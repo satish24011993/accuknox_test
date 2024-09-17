@@ -82,41 +82,7 @@ class SendFriendRequestView(APIView):
             return Response({'error':'Friend request already sent.'}, status=400)
         FriendRequest.objects.create(from_user=request.user, to_user=to_user)
         return Response({'status':'Friend request sent.'})
-
-        
-
-# Accept Friend Request View
-class AcceptFriendRequestView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, *args, **kwargs):
-        request_id = request.data.get('request_id')
-        try:
-            friend_request = FriendRequest.objects.get(id=request_id, to_user=request.user, is_accepted=False)
-            friend_request.is_accepted = True
-            friend_request.save()
-            # Create mutual friendship
-            Friend.objects.create(user = request.user, friend=friend_request.from_user)
-            Friend.objects.create(user= friend_request.from_user, friend=request.user)
-            return Response({'message':'Friend request accepted'}, status=status.HTTP_200_OK)
-        except FriendRequest.DoesNotExist:
-            return Response({'error':'Friend request not found'}, status=status.HTTP_404_NOT_FOUND)
-        
-
-# Reject Friend Request View
-class RejectFriendRequestView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, *args, **kwargs):
-        request_id = request.data.get('request_id')
-        try:
-            friend_request = FriendRequest.objects.get(id=request_id, to_user=request.user, is_accepted=False)
-            friend_request.is_rejected = True
-            friend_request.save()
-            return Response({'message':'Friend request rejected'}, status=status.HTTP_200_OK)
-        except FriendRequest.DoesNotExists:
-            return Response({'error': 'Friend request not found'}, status=status.HTTP_404_NOT_FOUND)
-        
+      
 
 # List Friends View
 class FriendsListView(generics.ListAPIView):

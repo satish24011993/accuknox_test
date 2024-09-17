@@ -1,7 +1,7 @@
 from django.urls import path
 # from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 # from .views import SendFriendRequest, AcceptFriendRequest,RejectFriendRequest, ListFriends,DeleteFriend
-from .views import SignupView,UserSearchView, SendFriendRequestView,AcceptFriendRequestView,RejectFriendRequestView, FriendsListView,PendingFriendRequestsView, RespondFriendRequestView,LoginView
+from .views import SignupView,UserSearchView, SendFriendRequestView, FriendsListView,PendingFriendRequestsView, RespondFriendRequestView,LoginView
 
 
 urlpatterns = [
