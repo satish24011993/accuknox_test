@@ -4,7 +4,7 @@
 FROM python:3.9-slim
 
 # Set environment variable
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 
 # Set the working directory
 WORKDIR /app
@@ -27,7 +27,7 @@ COPY . .
 EXPOSE 8000
 
 # Run the application
-CMD ['python', 'manage.py', 'runserver', '0.0.0.0:8000']
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 # CMD ["gunicorn", "--bind", "0.0.0.0:8000", "social_media.wsgi:application"]
 
 # # Copy the project files
@@ -43,5 +43,5 @@ COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Set the entrypoint
-ENTRYPOINT ['/entrypoint.sh']
+ENTRYPOINT ["/entrypoint.sh"]
 
