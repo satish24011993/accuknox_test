@@ -8,10 +8,10 @@ class ModelTests(TestCase):
 
     def setUp(self):
         self.user1 = CustomUser.objects.create_user(
-            email='user32@example.com', username='user32', password='password123'
+            email='user32@example.com', username='user32', password='Test@123'
         )
         self.user2 = CustomUser.objects.create_user(
-            email='user33@example.com', username='user33', password='password123'
+            email='user33@example.com', username='user33', password='Test@123'
         )
 
     def test_friend_request_creation(self):

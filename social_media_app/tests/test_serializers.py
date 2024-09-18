@@ -9,7 +9,7 @@ class SerializerTests(TestCase):
 
     def setUp(self):
         self.user = CustomUser.objects.create_user(
-            email='user34@example.com', username='user34', password='password123'
+            email='user34@example.com', username='user34', password='Test@123'
         )
 
     def test_user_serializer(self):
@@ -20,7 +20,7 @@ class SerializerTests(TestCase):
 
     def test_friend_request_serializer(self):
         other_user = CustomUser.objects.create_user(
-            email='other@example.com', username='other', password='password123'
+            email='other@example.com', username='other', password='Test@123'
         )
         friend_request = FriendRequest.objects.create(
             from_user = self.user, to_user=other_user

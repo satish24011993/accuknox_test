@@ -15,10 +15,10 @@ class ViewTests(TestCase):
 
         # Create users
         self.user26 = CustomUser.objects.create_user(
-            email='user26@example.com', username='user26', password='password123'
+            email='user26@example.com', username='user26', password='Test@123'
         )
         self.user27 = CustomUser.objects.create_user(
-            email='user27@example.com', username='user27', password='password123'
+            email='user27@example.com', username='user27', password='Test@123'
         )
 
         # Obtain tokens
@@ -30,7 +30,7 @@ class ViewTests(TestCase):
         data = {
             'email':'user28@example.com',
             'username':'user28',
-            'password':'password123'
+            'password':'Test@123'
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -40,7 +40,7 @@ class ViewTests(TestCase):
         url = reverse('login')
         data = {
             'email':'user26@example.com',
-            'password': 'password123'
+            'password': 'Test@123'
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -56,10 +56,10 @@ class ViewTests(TestCase):
     def test_user_search_by_email(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token '+self.token1.key)
         url = reverse('user-search')
-        response = self.client.get(url+'?q=user27@example.com', format='json')
+        response = self.client.get(url+'?q=user26@example.com', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), 1)
-        self.assertEqual(response.data['results'][0]['email'],'user27@example.com')
+        self.assertEqual(response.data['results'][0]['email'],'user26@example.com')
     
     def test_send_friend_request(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token '+ self.token1.key)
@@ -101,8 +101,8 @@ class ViewTests(TestCase):
         url = reverse('friends-list')
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['email'], 'user2@example.com')
+        self.assertEqual(len(response.data.results), 1)
+        self.assertEqual(response.data.results[0]['email'], 'user27@example.com')
     
     def test_list_pending_friend_requests(self):
         FriendRequest.objects.create(from_user=self.user26, to_user=self.user27)
@@ -110,8 +110,8 @@ class ViewTests(TestCase):
         url = reverse('pending-friend-requests')
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['from_user']['email'], 'user26@example.com')
+        self.assertEqual(len(response.data.results), 1)
+        self.assertEqual(response.data.results[0]['from_user']['email'], 'user26@example.com')
 
     
     def test_throttling_friend_requests(self):
@@ -124,7 +124,7 @@ class ViewTests(TestCase):
 
         # Send second request to a new user
         user29 = CustomUser.objects.create_user(
-            email='user3@example.com', username='user29',password='password123'
+            email='user29@example.com', username='user29',password='Test@123'
         )
         url = reverse('send-friend-request', kwargs={'user_id':user29.id})
         response = self.client.post(url, format='json')
@@ -132,7 +132,7 @@ class ViewTests(TestCase):
 
         # Send third request to another new user
         user30 = CustomUser.objects.create_user(
-            email='user4@example.com',username='user30',password='password123'
+            email='user30@example.com',username='user30',password='Test@123'
         )
         url = reverse('send-friend-request', kwargs={'user_id':user30.id})
         response = self.client.post(url, format='json')
@@ -140,7 +140,7 @@ class ViewTests(TestCase):
 
         # Send fourth request, should be throttled
         user31 = CustomUser.objects.create_user(
-            email='user5@example.com', username='user31', password='password123'
+            email='user31@example.com', username='user31', password='Test@123'
         )
         url = reverse('send-friend-request', kwargs={'user_id':user31.id})
         response = self.client.post(url, format='json')
