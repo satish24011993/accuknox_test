@@ -6,7 +6,7 @@ from .models import FriendRequest, Friend,CustomUser
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'username','first_name', 'last_name']
+        fields = ['id', 'email', 'username']
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):

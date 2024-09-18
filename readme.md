@@ -774,3 +774,8 @@ Friend List: Verify that friends appear in the friends list after accepting requ
 Pending Requests: Check that incoming friend requests appear in the pending list.
 Throttling: Test rate limiting by attempting to send multiple friend requests quickly.
 Pagination: Verify that search results are correctly paginated.
+
+
+
+To run the test on the test scripts:
+python manage.py test social_media_app.tests

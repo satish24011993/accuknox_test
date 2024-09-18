@@ -53,7 +53,7 @@ class UserSearchView(generics.ListAPIView):
     pagination_class = PageNumberPagination
     pagination_class.page_size = 10
 
-    @method_decorator(cache_page(60*5))
+    # @method_decorator(cache_page(60*5))
     def get_queryset(self):
         keyword = self.request.query_params.get('q','')
         if '@' in keyword: # Exact email match
@@ -93,18 +93,18 @@ class FriendsListView(generics.ListAPIView):
     #     return Friend.objects.filter(user=self.request.user)
     def get_queryset(self):
         user = self.request.user
-        cache_key = f'friends_list_{user.id}'
-        friends = cache.get(cache_key)
-        if not friends:
-            accepted_requests = FriendRequest.objects.filter(
-                (Q(from_user=user)|Q(to_user=user)),
-                status='accepted'
-            ).select_related('from_user','to_user')
-            friends = set()
-            for req in accepted_requests:
-                friends.add(req.from_user)
-                friends.add(req.to_user)
-            friends.discard(user)
+        # cache_key = f'friends_list_{user.id}'
+        # friends = cache.get(cache_key)
+        # if not friends:
+        accepted_requests = FriendRequest.objects.filter(
+            (Q(from_user=user)|Q(to_user=user)),
+            status='accepted'
+        ).select_related('from_user','to_user')
+        friends = set()
+        for req in accepted_requests:
+            friends.add(req.from_user)
+            friends.add(req.to_user)
+        friends.discard(user)
         return list(friends)
     
 

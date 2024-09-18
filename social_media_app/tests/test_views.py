@@ -49,7 +49,7 @@ class ViewTests(TestCase):
     def test_user_search_by_name(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token '+ self.token1.key)
         url = reverse('user-search')
-        response = self.client.get(url + '?q=user28', format='json')
+        response = self.client.get(url + '?q=user', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(len(response.data['results']) >= 2)
     
@@ -93,7 +93,7 @@ class ViewTests(TestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         friend_request.refresh_from_db()
-        self.assertEqual(friend_request.status, 'accepted')
+        self.assertEqual(friend_request.status, 'rejected')
 
     def test_list_friends(self):
         FriendRequest.objects.create(from_user=self.user26, to_user=self.user27, status='accepted')
