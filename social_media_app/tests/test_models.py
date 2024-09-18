@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from ..models import FriendRequest, CustomUser
+from django.db import IntegrityError
 
 User = get_user_model()
 
@@ -22,8 +23,8 @@ class ModelTests(TestCase):
         self.assertEqual(friend_request.from_user, self.user32)
         self.assertEqual(friend_request.to_user, self.user33)
     
-    # def test_friend_request_unique_constraint(self):
-    #     FriendRequest.objects.create(from_user=self.user32, to_user=self.user33)
-    #     with self.assertRaises(Exception):
-    #         # Should raise an IntegrityError due to unique_together constraint
-    #         FriendRequest.objects.create(from_user=self.user32, to_user=self.user33)
+    def test_friend_request_unique_constraint(self):
+        FriendRequest.objects.create(from_user=self.user32, to_user=self.user33)
+        with self.assertRaises(IntegrityError):
+            # Should raise an IntegrityError due to unique_together constraint
+            FriendRequest.objects.create(from_user=self.user32, to_user=self.user33)

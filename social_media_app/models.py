@@ -75,6 +75,9 @@ class FriendRequest(models.Model):
     )
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
 
+    class Meta:
+        unique_together = ('from_user','to_user') # Ensure uniqueness
+
     def __str__(self):
         return f"From {self.from_user.username} to {self.to_user.username}"
 

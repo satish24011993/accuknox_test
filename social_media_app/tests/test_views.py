@@ -106,12 +106,12 @@ class ViewTests(TestCase):
     
     def test_list_pending_friend_requests(self):
         FriendRequest.objects.create(from_user=self.user26, to_user=self.user27)
-        self.client.credentials(HTTP_AUTHORIZATION='Token '+self.token1.key)
+        self.client.credentials(HTTP_AUTHORIZATION='Token '+self.token2.key)
         url = reverse('pending-friend-requests')
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # self.assertEqual(len(response.data['results']), 1)
-        # self.assertEqual(response.data['results'][0]['from_user']['email'], 'user26@example.com')
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.data['results'][0]['from_user']['email'], 'user26@example.com')
 
     
     def test_throttling_friend_requests(self):
